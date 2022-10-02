@@ -1,5 +1,7 @@
 package main
 
+// Author: Nicolas Sá de Souza - 1072113016
+
 import (
 	"fmt"
 	"net"
