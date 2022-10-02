@@ -37,18 +37,18 @@ func (c *client) readInput() {
 
 		// Switch case para construir o comando certo:
 		switch cmd {
-		case "/nick":
-			c.commands <- command{
-				id:     CMD_NICK,
-				client: c,
-				args:   args,
-			}
-		case "/join":
-			c.commands <- command{
-				id:     CMD_JOIN,
-				client: c,
-				args:   args,
-			}
+		// case "/nick":
+		// 	c.commands <- command{
+		// 		id:     CMD_NICK,
+		// 		client: c,
+		// 		args:   args,
+		// 	}
+		// case "/join":
+		// 	c.commands <- command{
+		// 		id:     CMD_JOIN,
+		// 		client: c,
+		// 		args:   args,
+		// 	}
 		// case "/rooms":
 		// 	c.commands <- command{
 		// 		id:     CMD_ROOMS,

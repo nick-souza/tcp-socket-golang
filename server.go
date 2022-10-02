@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"net"
 	"strconv"
@@ -34,7 +35,7 @@ func (server *server) run() {
 		switch command.id {
 		// TODO: Trocar para os comandos certos:
 		case CMD_MATRIX:
-			server.matrix(command.client, command.args)
+			go server.matrixMultiplyByAnother(command.client, command.args)
 		case CMD_GRADES:
 			server.grades(command.client, command.args, command.msg)
 		case CMD_QUIT:
@@ -112,10 +113,35 @@ func (s *server) newClient(conn net.Conn) *client {
 // }
 
 // Função para calcular matrizes:
-func (s *server) matrix(c *client, args []string) {
-	// Implementar logica de onde colocar para o usuário quais informações inserir (operação, tamanho, dados da matriz)
-	c.msg("Você escolheu cálculo de matrizes:")
-	// c.msg("--> ", args[1])
+func (s *server) matrixMultiplyByAnother(c *client, args []string) {
+	c.msg("Você escolheu multiplicar uma matriz por outra\n")
+
+WAITINGS:
+	for {
+		var reader = bufio.NewReader(c.conn)
+		c.msg("Coloque o número de linhas matriz A: \n")
+
+		var rowsAString, _ = reader.ReadString('\n')
+
+		rowsA, err := checkNumber(rowsAString)
+
+		if err != nil {
+			c.msg("Não é um número")
+			c.err(err)
+			continue WAITINGS
+		}
+
+		c.msg(fmt.Sprintf("Inserido: %v", rowsA))
+	}
+}
+
+func checkNumber(num string) (int, error) {
+	num = strings.Trim(num, "\r\n")
+	numInt, err := strconv.Atoi(num)
+	if err != nil {
+		return 0, err
+	}
+	return numInt, nil
 }
 
 func (server *server) grades(client *client, args []string, message string) {
