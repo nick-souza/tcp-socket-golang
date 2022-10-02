@@ -35,10 +35,11 @@ READINPUT:
 		// Switch case para construir o comando certo:
 		switch cmd {
 		case "/cmd":
-			c.msg("Para multiplicar uma matriz por um número: /m1\n")
-			c.msg("Para multiplicar uma matriz por outra matriz: /m2\n")
-			c.msg("Para adicionar uma matriz por um número: /m3\n")
-			c.msg("Para adicionar uma matriz com outra matriz: /m4\n")
+			c.commands <- command{
+				id:     CMD_LIST,
+				client: c,
+				args:   args,
+			}
 
 		case "/m1":
 			c.commands <- command{
@@ -61,6 +62,7 @@ READINPUT:
 				id:     CMD_QUIT,
 				client: c,
 			}
+			break READINPUT
 
 		// Case não caia nos cases:
 		default:

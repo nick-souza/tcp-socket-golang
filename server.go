@@ -26,16 +26,22 @@ func (server *server) run() {
 	for command := range server.commands {
 		// Switch case no ID, chamando as funções adequadas:
 		switch command.id {
+		case CMD_LIST:
+			fmt.Printf("\n--> Cliente %s digitou o comando /cmd\n", command.client.conn.RemoteAddr().String())
+			go server.showList(command.client)
 		case CMD_MATRIX_MULTI_BY_ANOTHER:
-			go server.multiplyOneMatrixByAnother(command.client, command.args)
+			fmt.Printf("\n--> Cliente %s digitou o comando /m1\n", command.client.conn.RemoteAddr().String())
+			go server.multiplyOneMatrixByAnother(command.client)
 		case CMD_MATRIX_MULTI_BY_NUM:
+			fmt.Printf("\n--> Cliente %s digitou o comando /m2\n", command.client.conn.RemoteAddr().String())
 			go server.multiplyMatrixByNumber(command.client)
 		case CMD_MATRIX_ADD_BY_ANOTHER:
-			// go server.multiplyMatrixByNumber(command.client)
+			go server.addMatrixToAnother(command.client)
 		case CMD_MATRIX_ADD_BY_NUM:
 			// go server.multiplyMatrixByNumber(command.client)
 		case CMD_QUIT:
-			server.quit(command.client)
+			fmt.Printf("\n--> Cliente %s digitou o comando /sair\n", command.client.conn.RemoteAddr().String())
+			go server.quit(command.client)
 		}
 	}
 }
