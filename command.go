@@ -3,11 +3,11 @@ package main
 type commandID int
 
 const (
-	CMD_NICK commandID = iota
-	CMD_JOIN
-
-	CMD_GRADES
-	CMD_MATRIX
+	CMD_LIST commandID = iota
+	CMD_MATRIX_MULTI_BY_ANOTHER
+	CMD_MATRIX_MULTI_BY_NUM
+	CMD_MATRIX_ADD_BY_ANOTHER
+	CMD_MATRIX_ADD_BY_NUM
 	CMD_QUIT
 )
 

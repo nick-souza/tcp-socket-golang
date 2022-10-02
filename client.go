@@ -11,25 +11,22 @@ import (
 type client struct {
 	// A conexão do usuário:
 	conn net.Conn
-
-	// nick     string
-	// room     *room
-
 	// E um canal para troca dos comandos:
 	commands chan<- command
 }
 
 // Func con loop parar poder ler as mensagens do cliente
 func (c *client) readInput() {
+READINPUT:
 	for {
+		c.msg("Para a lista de comandos digite /cmd\n")
+
 		// NewReader:
 		msg, err := bufio.NewReader(c.conn).ReadString('\n')
 		if err != nil {
 			return
 		}
 
-		// Removendo os "/" e os espaços da mensagem:
-		// msg = strings.Trim(msg, "\r\n")
 		// Dividindo entre "/" e o resto da mensagem:
 		args := strings.Split(msg, " ")
 		// Criando uma variável para segurar o comando do cliente:
@@ -37,44 +34,27 @@ func (c *client) readInput() {
 
 		// Switch case para construir o comando certo:
 		switch cmd {
-		// case "/nick":
-		// 	c.commands <- command{
-		// 		id:     CMD_NICK,
-		// 		client: c,
-		// 		args:   args,
-		// 	}
-		// case "/join":
-		// 	c.commands <- command{
-		// 		id:     CMD_JOIN,
-		// 		client: c,
-		// 		args:   args,
-		// 	}
-		// case "/rooms":
-		// 	c.commands <- command{
-		// 		id:     CMD_ROOMS,
-		// 		client: c,
-		// 	}
-		// case "/msg":
-		// 	c.commands <- command{
-		// 		id:     CMD_MSG,
-		// 		client: c,
-		// 		args:   args,
-		// 	}
+		case "/cmd":
+			c.msg("Para multiplicar uma matriz por um número: /m1\n")
+			c.msg("Para multiplicar uma matriz por outra matriz: /m2\n")
+			c.msg("Para adicionar uma matriz por um número: /m3\n")
+			c.msg("Para adicionar uma matriz com outra matriz: /m4\n")
 
-		case "/notas":
+		case "/m1":
 			c.commands <- command{
-				id:     CMD_GRADES,
-				client: c,
-				args:   args,
-				msg:    msg,
-			}
-
-		case "/matriz":
-			c.commands <- command{
-				id:     CMD_MATRIX,
+				id:     CMD_MATRIX_MULTI_BY_NUM,
 				client: c,
 				args:   args,
 			}
+			break READINPUT
+
+		case "/m2":
+			c.commands <- command{
+				id:     CMD_MATRIX_MULTI_BY_ANOTHER,
+				client: c,
+				args:   args,
+			}
+			break READINPUT
 
 		case "/sair":
 			c.commands <- command{

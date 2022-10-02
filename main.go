@@ -12,7 +12,6 @@ func main() {
 	go s.run()
 
 	// Utilizando o net.Listen para poder esperar conexões em um thread separado, para poder aceitar mais conexões ao mesmo tempo;
-	// Passando o tipo de conexão e a porta:
 	listener, err := net.Listen("tcp", ":6666")
 	if err != nil {
 		fmt.Printf("\n--> Erro ao iniciar servidor")
@@ -38,9 +37,6 @@ func main() {
 
 		// Usando a conexão para inicializar um novo cliente:
 		c := s.newClient(conn)
-
-		// c.msg("Para cálculo de notas: /notas")
-		// c.msg("Para cálculo de matrizes: /matriz")
 
 		// Chamando uma goroutine para ficar lendo o input do cliente:
 		go c.readInput()

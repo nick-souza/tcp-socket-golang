@@ -69,7 +69,7 @@ RECONNECT:
 		for {
 			select {
 			case m := <-output:
-				fmt.Printf("--> Servidor: %q\n", strings.Trim(m, "\r\n"))
+				fmt.Printf("--> Servidor: %s\n", strings.Trim(m, "\r\n"))
 
 			case m := <-input:
 				// fmt.Printf("Sending: %q\n", m)
