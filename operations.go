@@ -60,11 +60,6 @@ BUILD_MATRIX:
 			result[i] = make([]int, columnsA)
 		}
 
-		// Ecoando o resultado para o cliente:
-		c.msg(fmt.Sprintf("Resultado da matriz A multiplicada por %v é:", multiplyByInt))
-		// Ecoando o resultado para o servidor:
-		fmt.Printf("--> Cliente: %v - resultado é:\n", c.conn.RemoteAddr())
-
 		// Fazendo o loop sobre a matriz para poder imprimir os valores:
 		for i, row := range result {
 			for j := range row {
@@ -72,6 +67,11 @@ BUILD_MATRIX:
 				result[i][j] = matrixA[i][j] * multiplyByInt
 			}
 		}
+
+		// Ecoando o resultado para o cliente:
+		c.msg(fmt.Sprintf("Resultado da matriz A multiplicada por %v é:", multiplyByInt))
+		// Ecoando o resultado para o servidor:
+		fmt.Printf("--> Cliente: %v - resultado é:\n", c.conn.RemoteAddr())
 
 		// Chamando a função para dar print:
 		printMatrix(result, c)
@@ -148,6 +148,10 @@ BUILD_MATRICES:
 			}
 		}
 
+		// Ecoando o resultado para o cliente:
+		c.msg(fmt.Sprintf("Resultado da multiplicação da matriz A pela matriz B é:"))
+		// Ecoando o resultado para o servidor:
+		fmt.Printf("--> Cliente: %v - resultado é:\n", c.conn.RemoteAddr())
 		// Chamando a função para dar print:
 		printMatrix(result, c)
 
@@ -208,11 +212,6 @@ BUILD_MATRIX:
 			result[i] = make([]int, columnsA)
 		}
 
-		// Ecoando o resultado para o cliente:
-		c.msg(fmt.Sprintf("Resultado da matriz A somada com %v é:", addToInt))
-		// Ecoando o resultado para o servidor:
-		fmt.Printf("--> Cliente: %v - resultado é:\n", c.conn.RemoteAddr())
-
 		// Fazendo o loop sobre a matriz para poder imprimir os valores:
 		for i, row := range result {
 			for j := range row {
@@ -221,6 +220,10 @@ BUILD_MATRIX:
 			}
 		}
 
+		// Ecoando o resultado para o cliente:
+		c.msg(fmt.Sprintf("Resultado da matriz A somada por %v é:", addToInt))
+		// Ecoando o resultado para o servidor:
+		fmt.Printf("--> Cliente: %v - resultado é:\n", c.conn.RemoteAddr())
 		// Chamando a função para dar print:
 		printMatrix(result, c)
 
@@ -284,6 +287,11 @@ BUILD_MATRICES:
 				result[i][j] = matrixA[i][j] + matrixB[i][j]
 			}
 		}
+
+		// Ecoando o resultado para o cliente:
+		c.msg(fmt.Sprintf("Resultado da soma da matriz A com a matriz B é:"))
+		// Ecoando o resultado para o servidor:
+		fmt.Printf("--> Cliente: %v - resultado é:\n", c.conn.RemoteAddr())
 
 		// Chamando a função para dar print:
 		printMatrix(result, c)
