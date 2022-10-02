@@ -24,23 +24,21 @@ func newServer() *server {
 func (server *server) run() {
 	// Usando for e range para poder fazer um loop pelo channel de comandos:
 	for command := range server.commands {
-		// Switch case no ID, chamando as funções adequadas:
+		fmt.Printf("\n--> Cliente %s digitou %s\n", command.client.conn.RemoteAddr().String(), command.args[0])
+
+		// Switch case no ID do comando, chamando as funções adequadas:
 		switch command.id {
 		case CMD_LIST:
-			fmt.Printf("\n--> Cliente %s digitou o comando /cmd\n", command.client.conn.RemoteAddr().String())
-			go server.showList(command.client)
+			server.showList(command.client)
 		case CMD_MATRIX_MULTI_BY_ANOTHER:
-			fmt.Printf("\n--> Cliente %s digitou o comando /m1\n", command.client.conn.RemoteAddr().String())
 			go server.multiplyOneMatrixByAnother(command.client)
 		case CMD_MATRIX_MULTI_BY_NUM:
-			fmt.Printf("\n--> Cliente %s digitou o comando /m2\n", command.client.conn.RemoteAddr().String())
 			go server.multiplyMatrixByNumber(command.client)
+		case CMD_ADD_NUM_TO_MATRIX:
+			go server.addNumToMatrix(command.client)
 		case CMD_MATRIX_ADD_BY_ANOTHER:
 			go server.addMatrixToAnother(command.client)
-		case CMD_MATRIX_ADD_BY_NUM:
-			// go server.multiplyMatrixByNumber(command.client)
 		case CMD_QUIT:
-			fmt.Printf("\n--> Cliente %s digitou o comando /sair\n", command.client.conn.RemoteAddr().String())
 			go server.quit(command.client)
 		}
 	}

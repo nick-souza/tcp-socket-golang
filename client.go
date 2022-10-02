@@ -57,10 +57,27 @@ READINPUT:
 			}
 			break READINPUT
 
+		case "/m3":
+			c.commands <- command{
+				id:     CMD_ADD_NUM_TO_MATRIX,
+				client: c,
+				args:   args,
+			}
+			break READINPUT
+
+		case "/m4":
+			c.commands <- command{
+				id:     CMD_MATRIX_ADD_BY_ANOTHER,
+				client: c,
+				args:   args,
+			}
+			break READINPUT
+
 		case "/sair":
 			c.commands <- command{
 				id:     CMD_QUIT,
 				client: c,
+				args:   args,
 			}
 			break READINPUT
 

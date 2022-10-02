@@ -6,7 +6,6 @@ import (
 	"io"
 	"net"
 	"os"
-	"strings"
 	"time"
 )
 
@@ -36,7 +35,8 @@ RECONNECT:
 			select {
 			// Case para receber dados do servidor. Imprimindo na tela do cliente:
 			case m := <-output:
-				fmt.Printf("--> Servidor: %s\n", strings.Trim(m, "\r\n"))
+				// fmt.Printf("--> Servidor: %s\n", strings.Trim(m, "\r\n"))
+				fmt.Printf("--> Servidor: %s", m)
 
 				// Case para ler o input do cliente e mandar para o servidor:
 			case m := <-input:

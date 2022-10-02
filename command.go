@@ -2,12 +2,13 @@ package main
 
 type commandID int
 
+// Variáveis para usar como IDs dos comandos:
 const (
 	CMD_LIST commandID = iota
 	CMD_MATRIX_MULTI_BY_ANOTHER
 	CMD_MATRIX_MULTI_BY_NUM
+	CMD_ADD_NUM_TO_MATRIX
 	CMD_MATRIX_ADD_BY_ANOTHER
-	CMD_MATRIX_ADD_BY_NUM
 	CMD_QUIT
 )
 
@@ -19,6 +20,4 @@ type command struct {
 	client *client
 	// Array de string para guardar os comandos:
 	args []string
-
-	msg string
 }
