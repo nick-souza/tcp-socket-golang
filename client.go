@@ -19,7 +19,7 @@ type client struct {
 
 // Func con loop parar poder ler as mensagens do cliente
 func (c *client) readInput() {
-READINPUT:
+READ_INPUT:
 	for {
 		c.msg("Para a lista de comandos digite /cmd\n")
 
@@ -49,7 +49,7 @@ READINPUT:
 				client: c,
 				args:   args,
 			}
-			break READINPUT
+			break READ_INPUT
 
 		case "/m2":
 			c.commands <- command{
@@ -57,7 +57,7 @@ READINPUT:
 				client: c,
 				args:   args,
 			}
-			break READINPUT
+			break READ_INPUT
 
 		case "/m3":
 			c.commands <- command{
@@ -65,7 +65,7 @@ READINPUT:
 				client: c,
 				args:   args,
 			}
-			break READINPUT
+			break READ_INPUT
 
 		case "/m4":
 			c.commands <- command{
@@ -73,7 +73,7 @@ READINPUT:
 				client: c,
 				args:   args,
 			}
-			break READINPUT
+			break READ_INPUT
 
 		case "/sair":
 			c.commands <- command{
@@ -81,22 +81,23 @@ READINPUT:
 				client: c,
 				args:   args,
 			}
-			break READINPUT
+			break READ_INPUT
 
 		// Case não caia nos cases:
 		default:
-			c.err(fmt.Errorf("Comando não reconhecido: %s", cmd))
+			c.err(fmt.Errorf("comando não reconhecido: %s", cmd))
 		}
 	}
 }
 
 // Função para escrever potenciais erros para o cliente:
 func (c *client) err(err error) {
+	// Usando o net Write, que aceita apenas byte:
 	c.conn.Write([]byte("Erro: " + err.Error() + "\n"))
 }
 
 // Função para escrever mensagens:
 func (c *client) msg(msg string) {
 	// Usando o net Write, que aceita apenas byte:
-	c.conn.Write([]byte(msg + "\n"))
+	c.conn.Write([]byte(msg))
 }

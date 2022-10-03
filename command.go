@@ -6,6 +6,7 @@ type commandID int
 
 // Variáveis para usar como IDs dos comandos:
 const (
+	// Usando iota para popular o commandID e ir incrementando:
 	CMD_LIST commandID = iota
 	CMD_MATRIX_MULTI_BY_ANOTHER
 	CMD_MATRIX_MULTI_BY_NUM

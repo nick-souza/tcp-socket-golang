@@ -37,8 +37,9 @@ RECONNECT:
 			select {
 			// Case para receber dados do servidor. Imprimindo na tela do cliente:
 			case m := <-output:
-				// fmt.Printf("--> Servidor: %s\n", strings.Trim(m, "\r\n"))
-				fmt.Printf("--> Servidor: %s", m)
+				// Decidi usar o print sem nenhuma formatação para poder imprimir a matriz resultado em formato de grid:
+				fmt.Print(m)
+				// fmt.Printf("--> Servidor: %s", m)
 
 				// Case para ler o input do cliente e mandar para o servidor:
 			case m := <-input:
@@ -104,8 +105,10 @@ func readFromInput() {
 	for {
 		userInput, err := bufio.NewReader(os.Stdin).ReadString('\n')
 		if err != nil {
+			// Erro mais grave, terminar o programa:
 			panic(err)
 		}
+		// Passando para o canal:
 		input <- userInput
 	}
 }
@@ -115,9 +118,11 @@ func readFromServer(conn net.Conn) {
 	for {
 		serverInput, err := bufio.NewReader(conn).ReadString('\n')
 		if err != nil {
+			// Passando para o canal de erro:
 			errorChan <- err
 			return
 		}
+		// Passando para o canal:
 		output <- serverInput
 	}
 }

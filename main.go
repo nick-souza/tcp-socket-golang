@@ -35,7 +35,7 @@ func main() {
 			// Continue ao invés do return para continuar no for loop e continuar ouvindo;
 			continue
 		}
-		defer conn.Close()
+		// defer conn.Close()
 
 		// Usando a conexão para inicializar um novo cliente:
 		c := s.newClient(conn)

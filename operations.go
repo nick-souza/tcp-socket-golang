@@ -18,20 +18,14 @@ func (s *server) multiplyMatrixByNumber(c *client) {
 BUILD_MATRIX:
 	for {
 		// Chamando a função de criar matrizes:
-		matrixEmpty, err := buildMatrix("A", c)
-		if err != nil {
-			// Informar o cliente do erro:
-			c.err(err)
-			// Em caso de erro, voltando para o início do loop:
-			continue BUILD_MATRIX
-		}
+		matrixEmpty := buildMatrix("A", c)
 
 		// Pegando o tamanha da matrix:
-		var rowsA int = len(matrixEmpty)
-		var columnsA int = len(matrixEmpty[0])
+		var rows int = len(matrixEmpty)
+		var columns int = len(matrixEmpty[0])
 
 		// Chamando a função para popular a matriz:
-		matrixA := populateMatrix("A", matrixEmpty, c)
+		matrix := populateMatrix("A", matrixEmpty, c)
 
 		// Variável para segurar o valor a ser multiplicado:
 		var multiplyByInt int
@@ -43,9 +37,10 @@ BUILD_MATRIX:
 			var multiplyBy, _ = bufio.NewReader(c.conn).ReadString('\n')
 
 			// Validando o input do cliente:
+			var err error
 			multiplyByInt, err = checkNumber(multiplyBy)
 			if err != nil {
-				c.err(fmt.Errorf("Erro: para fazer multiplicação precisa ser um número\n"))
+				c.err(fmt.Errorf("para fazer multiplicação precisa ser um número"))
 				// Voltando para o início do loop:
 				continue MULTIPLY_BY
 			}
@@ -55,21 +50,21 @@ BUILD_MATRIX:
 		}
 
 		// Criando a matriz resultado; Tendo o mesmo tamanho da matriz original:
-		var result = make([][]int, rowsA)
-		for i := 0; i < rowsA; i++ {
-			result[i] = make([]int, columnsA)
+		var result = make([][]int, rows)
+		for i := 0; i < rows; i++ {
+			result[i] = make([]int, columns)
 		}
 
 		// Fazendo o loop sobre a matriz para poder imprimir os valores:
 		for i, row := range result {
 			for j := range row {
 				// Multiplicando cada elemento da matriz pelo valor do cliente:
-				result[i][j] = matrixA[i][j] * multiplyByInt
+				result[i][j] = matrix[i][j] * multiplyByInt
 			}
 		}
 
 		// Ecoando o resultado para o cliente:
-		c.msg(fmt.Sprintf("Resultado da matriz A multiplicada por %v é:", multiplyByInt))
+		c.msg(fmt.Sprintf("Resultado da matriz A multiplicada por %v é:\n", multiplyByInt))
 		// Ecoando o resultado para o servidor:
 		fmt.Printf("--> Cliente: %v - resultado é:\n", c.conn.RemoteAddr())
 
@@ -91,32 +86,20 @@ func (s *server) multiplyOneMatrixByAnother(c *client) {
 BUILD_MATRICES:
 	for {
 		// Chamando a função de criar matrizes:
-		matrixAEmpty, err := buildMatrix("A", c)
-		if err != nil {
-			// Informar o cliente do erro:
-			c.err(err)
-			// Em caso de erro, voltando para o início do loop:
-			continue BUILD_MATRICES
-		}
+		matrixAEmpty := buildMatrix("A", c)
 
 		// Pegando o tamanha da matrix:
 		var rowsA int = len(matrixAEmpty)
 		var columnsA int = len(matrixAEmpty[0])
 
-		matrixBEmpty, err := buildMatrix("B", c)
-		if err != nil {
-			// Informar o cliente do erro:
-			c.err(err)
-			// Em caso de erro, voltando para o início do loop:
-			continue BUILD_MATRICES
-		}
+		matrixBEmpty := buildMatrix("B", c)
 
 		// Pegando o tamanha da matrix:
 		var rowsB int = len(matrixBEmpty)
 		var columnsB int = len(matrixBEmpty[0])
 
 		if columnsA != rowsB {
-			c.err(fmt.Errorf("Multiplicação não é possível, o número de colunas da matrix A é diferente no número de linhas da matrix B.\n"))
+			c.err(fmt.Errorf("multiplicação não é possível, o número de colunas da matriz A é diferente no número de linhas da matriz B"))
 			continue BUILD_MATRICES
 		}
 
@@ -149,7 +132,7 @@ BUILD_MATRICES:
 		}
 
 		// Ecoando o resultado para o cliente:
-		c.msg(fmt.Sprintf("Resultado da multiplicação da matriz A pela matriz B é:"))
+		c.msg("Resultado da multiplicação da matriz A pela matriz B é:\n")
 		// Ecoando o resultado para o servidor:
 		fmt.Printf("--> Cliente: %v - resultado é:\n", c.conn.RemoteAddr())
 		// Chamando a função para dar print:
@@ -167,23 +150,17 @@ func (s *server) addNumToMatrix(c *client) {
 	c.msg("Você escolheu somar uma matriz por um número.\n")
 
 	// Label para poder continuar caso haja erro:
-BUILD_MATRIX:
+CALCULATE:
 	for {
 		// Chamando a função de criar matrizes:
-		matrixEmpty, err := buildMatrix("A", c)
-		if err != nil {
-			// Informar o cliente do erro:
-			c.err(err)
-			// Em caso de erro, voltando para o início do loop:
-			continue BUILD_MATRIX
-		}
+		matrixEmpty := buildMatrix("A", c)
 
 		// Pegando o tamanha da matrix:
-		var rowsA int = len(matrixEmpty)
-		var columnsA int = len(matrixEmpty[0])
+		var rows int = len(matrixEmpty)
+		var columns int = len(matrixEmpty[0])
 
 		// Chamando a função para popular a matriz:
-		matrixA := populateMatrix("A", matrixEmpty, c)
+		matrix := populateMatrix("A", matrixEmpty, c)
 
 		// Variável para segurar o valor a ser multiplicado:
 		var addToInt int
@@ -191,13 +168,14 @@ BUILD_MATRIX:
 		// Loop para o cliente inserir o valor:
 	ADD:
 		for {
-			c.msg("Insira o número que deseja somar na matrix A:\n")
+			c.msg("Insira o número que deseja somar com os elementos da matriz A:\n")
 			var addTo, _ = bufio.NewReader(c.conn).ReadString('\n')
 
 			// Validando o input do cliente:
+			var err error
 			addToInt, err = checkNumber(addTo)
 			if err != nil {
-				c.err(fmt.Errorf("Erro: para fazer multiplicação precisa ser um número\n"))
+				c.err(fmt.Errorf("para somar precisa ser um número"))
 				// Voltando para o início do loop:
 				continue ADD
 			}
@@ -207,28 +185,28 @@ BUILD_MATRIX:
 		}
 
 		// Criando a matriz resultado; Tendo o mesmo tamanho da matriz original:
-		var result = make([][]int, rowsA)
-		for i := 0; i < rowsA; i++ {
-			result[i] = make([]int, columnsA)
+		var result = make([][]int, rows)
+		for i := 0; i < rows; i++ {
+			result[i] = make([]int, columns)
 		}
 
 		// Fazendo o loop sobre a matriz para poder imprimir os valores:
 		for i, row := range result {
 			for j := range row {
 				// Multiplicando cada elemento da matriz pelo valor do cliente:
-				result[i][j] = matrixA[i][j] + addToInt
+				result[i][j] = matrix[i][j] + addToInt
 			}
 		}
 
 		// Ecoando o resultado para o cliente:
-		c.msg(fmt.Sprintf("Resultado da matriz A somada por %v é:", addToInt))
+		c.msg(fmt.Sprintf("Resultado da matriz A somada por %v é:\n", addToInt))
 		// Ecoando o resultado para o servidor:
 		fmt.Printf("--> Cliente: %v - resultado é:\n", c.conn.RemoteAddr())
 		// Chamando a função para dar print:
 		printMatrix(result, c)
 
 		// Caso não ocorra mais erros, saindo do loop:
-		break BUILD_MATRIX
+		break CALCULATE
 	}
 
 	// Quando terminar de calcular, voltar para o menu para o cliente escolher outra operação:
@@ -238,35 +216,30 @@ BUILD_MATRIX:
 func (s *server) addMatrixToAnother(c *client) {
 	c.msg("Você escolheu somar uma matriz com outra.\n")
 
+	var matrixAEmpty, matrixBEmpty [][]int
+	// var matrixAError, matrixBError error
+	var rowsA, colsA, rowsB, colsB int
+
 BUILD_MATRICES:
 	for {
+
 		// Chamando a função de criar matrizes:
-		matrixAEmpty, err := buildMatrix("A", c)
-		if err != nil {
-			// Informar o cliente do erro:
-			c.err(err)
-			// Em caso de erro, voltando para o início do loop:
-			continue BUILD_MATRICES
-		}
+		matrixAEmpty = buildMatrix("A", c)
 
 		// Pegando o tamanha da matrix:
-		var rowsA int = len(matrixAEmpty)
-		var columnsA int = len(matrixAEmpty[0])
+		rowsA = len(matrixAEmpty)
+		colsA = len(matrixAEmpty[0])
 
-		matrixBEmpty, err := buildMatrix("B", c)
-		if err != nil {
-			// Informar o cliente do erro:
-			c.err(err)
-			// Em caso de erro, voltando para o início do loop:
-			continue BUILD_MATRICES
-		}
+		// Chamando a função de criar matrizes:
+		matrixBEmpty = buildMatrix("B", c)
 
 		// Pegando o tamanha da matrix:
-		var rowsB int = len(matrixBEmpty)
-		var columnsB int = len(matrixBEmpty[0])
+		rowsB = len(matrixBEmpty)
+		colsB = len(matrixBEmpty[0])
 
-		if columnsA != columnsB || rowsA != rowsB {
-			c.err(fmt.Errorf("Adição não é possível, as matrizes inseridas são de ordens diferentes.\n"))
+		if colsA != colsB || rowsA != rowsB {
+			c.err(fmt.Errorf("adição não é possível, as matrizes inseridas são de ordens diferentes"))
+			// Voltar para o início:
 			continue BUILD_MATRICES
 		}
 
@@ -277,7 +250,7 @@ BUILD_MATRICES:
 		// Criando a matriz resultado, com a mesma ordem das outras:
 		var result = make([][]int, rowsA)
 		for i := 0; i < rowsA; i++ {
-			result[i] = make([]int, columnsA)
+			result[i] = make([]int, colsA)
 		}
 
 		// Fazendo o loop sobre a matriz para poder imprimir os valores:
@@ -289,7 +262,7 @@ BUILD_MATRICES:
 		}
 
 		// Ecoando o resultado para o cliente:
-		c.msg(fmt.Sprintf("Resultado da soma da matriz A com a matriz B é:"))
+		c.msg("Resultado da soma da matriz A com a matriz B é:\n")
 		// Ecoando o resultado para o servidor:
 		fmt.Printf("--> Cliente: %v - resultado é:\n", c.conn.RemoteAddr())
 
@@ -307,17 +280,16 @@ BUILD_MATRICES:
 // Função para imprimir os comandos disponíveis:
 func (s *server) showList(c *client) {
 	for {
-		c.msg(fmt.Sprint("Para multiplicar uma matriz por um número: /m1"))
+		c.msg("Para multiplicar uma matriz por um número: /m1\n")
 		time.Sleep(time.Millisecond * 10) // Usando sleep aqui pois as vezes ele não ecoava todas as mensagens;
-		c.msg(fmt.Sprint("Para multiplicar uma matriz por outra matriz: /m2"))
+		c.msg("Para multiplicar uma matriz por outra matriz: /m2\n")
 		time.Sleep(time.Millisecond * 10)
-		c.msg(fmt.Sprint("Para somar uma matriz por um número: /m3"))
+		c.msg("Para somar uma matriz por um número: /m3\n")
 		time.Sleep(time.Millisecond * 10)
-		c.msg(fmt.Sprint("Para somar uma matriz com outra matriz: /m4"))
+		c.msg("Para somar uma matriz com outra matriz: /m4\n")
 		time.Sleep(time.Millisecond * 10)
-		c.msg(fmt.Sprint("Para sair: /sair"))
+		c.msg("Para sair: /sair\n")
 		time.Sleep(time.Millisecond * 10)
-
 		break
 	}
 }
@@ -331,71 +303,86 @@ func (s *server) quit(c *client) {
 
 //----- Helpers -----\\
 
-// Função que pega os inputs do usuário e cria uma matriz. Retornando essa matriz, número de linhas e colunas e um potencial err:
-func buildMatrix(name string, c *client) ([][]int, error) {
-	// Número de linhas da matriz:
-	c.msg(fmt.Sprintf("Coloque o número de linhas da matriz %s: \n", name))
-	// Número de linhas da matriz:
-	var rowsAString, _ = bufio.NewReader(c.conn).ReadString('\n')
+// Função que pega os inputs do usuário e cria uma matriz, retorna essa matriz e um potencial err:
+func buildMatrix(name string, c *client) [][]int {
+	for {
+		var rowsString, columnsString string
+		var rows, columns int
 
-	// Validando o input do cliente:
-	rowsA, err := checkNumber(rowsAString)
-	if err != nil {
-		// Criando o erro para retornar:
-		return nil, fmt.Errorf("Número de linhas precisa ser um número\n")
+	GET_ROWS:
+		for {
+			// Número de linhas da matriz:
+			c.msg(fmt.Sprintf("Coloque o número de linhas da matriz %s: \n", name))
+			// Número de linhas da matriz:
+			rowsString, _ = bufio.NewReader(c.conn).ReadString('\n')
+
+			// Validando o input do cliente:
+			var err error
+			rows, err = checkNumber(rowsString)
+			if err != nil {
+				// Criando o erro para retornar:
+				c.err(fmt.Errorf("número de linhas precisa ser um número"))
+				continue GET_ROWS
+			}
+			break GET_ROWS
+		}
+
+	GET_COLS:
+		for {
+			c.msg(fmt.Sprintf("Coloque o número de colunas da matriz %s: \n", name))
+			// Número do colunas da matriz:
+			columnsString, _ = bufio.NewReader(c.conn).ReadString('\n')
+
+			// Validando o input do cliente:
+			var err error
+			columns, err = checkNumber(columnsString)
+			if err != nil {
+				// Criando o erro para retornar:
+				c.err(fmt.Errorf("número colunas precisa ser um número"))
+				continue GET_COLS
+			}
+			break GET_COLS
+		}
+
+		// Criando uma matriz bidimensional de acordo com os valores do cliente:
+		var matrix = make([][]int, rows)
+		for i := 0; i < rows; i++ {
+			matrix[i] = make([]int, columns)
+		}
+
+		// Retornando a matriz:
+		return matrix
 	}
-
-	c.msg(fmt.Sprintf("Coloque o número de colunas da matriz %s: \n", name))
-	// Número do colunas da matriz:
-	var columnsAString, _ = bufio.NewReader(c.conn).ReadString('\n')
-
-	// Validando o input do cliente:
-	columnsA, err := checkNumber(columnsAString)
-	if err != nil {
-		// Criando o erro para retornar:
-		return nil, fmt.Errorf("Número colunas precisa ser um número\n")
-	}
-
-	// Criando uma matriz bidimensional de acordo com os valores do cliente:
-	var matrixA = make([][]int, rowsA)
-	for i := 0; i < rowsA; i++ {
-		matrixA[i] = make([]int, columnsA)
-	}
-
-	// Retornando a matriz, número de linhas e colunas:
-	return matrixA, nil
 }
 
 // Função para popular uma matriz com inputs do cliente:
 func populateMatrix(name string, matrix [][]int, c *client) [][]int {
-	// Loop para o cliente inserir os valores da matriz:
-MATRIX_A_ELEMENTS:
-	for {
-		c.msg(fmt.Sprintf("Insira os valores da matrix %s: \n", name))
+	c.msg(fmt.Sprintf("Insira os valores da matriz %s: \n", name))
 
+	// Para o cliente inserir os valores da matriz:
+POPULATE:
+	for {
 		// Loop sobre os elementos da matriz para poder definir os valores:
 		for k, r := range matrix {
 			for l := range r {
-				c.msg(fmt.Sprintf("Valores: matrix %s[%d][%d]: ", name, k, l))
+				c.msg(fmt.Sprintf("Valores: matrix %s[%d][%d]: \n", name, k, l))
 				var value, _ = bufio.NewReader(c.conn).ReadString('\n')
 
 				// Validando o input do cliente:
 				valueInt, err := checkNumber(value)
 				if err != nil {
-					c.err(fmt.Errorf("Erro: favor inserir apenas números\n"))
+					c.err(fmt.Errorf("favor inserir apenas números"))
 					// Voltando para o início do loop:
-					continue MATRIX_A_ELEMENTS
+					continue POPULATE
 				}
-
 				// Atribuindo os valores:
 				matrix[k][l] = valueInt
 			}
 		}
-
 		// Saindo do loop caso não ocorra mais nenhum erro:
-		break MATRIX_A_ELEMENTS
+		break POPULATE
 	}
-
+	// Retornando a matriz com os elementos:
 	return matrix
 }
 
@@ -407,22 +394,24 @@ func printMatrix(matrix [][]int, c *client) {
 			fmt.Print(matrix[i][j], "\t")
 			// Ecoando para o cliente:
 			time.Sleep(time.Millisecond * 10) // Usando sleep aqui pois as vezes ele não ecoava todas as mensagens;
-			c.msg(fmt.Sprintf("Resultado[%d][%d]: %d\n", i, j, matrix[i][j]))
+			c.msg(fmt.Sprint(matrix[i][j], "\t"))
 		}
+		// Para dividir as linhas:
+		c.msg(fmt.Sprintln(""))
 		fmt.Println()
 	}
 }
 
 // Função para validar se o input é de fato um número. Retornando o número, e caso ocorra, um erro:
-func checkNumber(num string) (int, error) {
+func checkNumber(str string) (int, error) {
 	// Usando trim para limpar o input:
-	num = strings.Trim(num, "\r\n")
+	str = strings.Trim(str, "\r\n")
 	// Convertendo para int:
-	numInt, err := strconv.Atoi(num)
+	num, err := strconv.Atoi(str)
 	if err != nil {
 		// Retornando erro caso ocorra:
 		return 0, err
 	}
 	// Retornando o número e sem erros:
-	return numInt, nil
+	return num, nil
 }
